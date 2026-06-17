@@ -91,9 +91,9 @@ function AlreadyPlayed({ result, stats }: { result: GameResult; stats: Stats }) 
 // ── Game page ────────────────────────────────────────────────────────────────
 
 function GamePage() {
-  const { user, username, loading: authLoading } = useAuthStore()
+  const { user, loading: authLoading } = useAuthStore()
   const navigate = useNavigate()
-  const { status, currentInput, addLetter, deleteLetter, clearInput, submitGuess, resetGame } = useGameStore()
+  const { status, currentInput, addLetter, deleteLetter, clearInput, submitGuess } = useGameStore()
 
   const [toast, setToast] = useState<string | null>(null)
   const [shakingRow, setShakingRow] = useState<number | null>(null)
