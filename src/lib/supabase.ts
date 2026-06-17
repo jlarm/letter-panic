@@ -1,19 +1,9 @@
 import { createClient } from '@supabase/supabase-js'
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string | undefined
-const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string | undefined
-
-if (!supabaseUrl || !supabaseKey) {
-  // Visible in browser DevTools → Console
-  console.error(
-    '[Letter Panic] Missing env vars — URL:',
-    supabaseUrl,
-    'KEY:',
-    supabaseKey ? '(set)' : '(missing)',
-  )
-}
-
-export const supabase = createClient(supabaseUrl ?? '', supabaseKey ?? '')
+export const supabase = createClient(
+  import.meta.env.VITE_SUPABASE_URL as string,
+  import.meta.env.VITE_SUPABASE_ANON_KEY as string,
+)
 
 export interface GameResult {
   id: string

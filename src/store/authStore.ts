@@ -64,7 +64,6 @@ export const useAuthStore = create<AuthState>((set) => ({
     const { data, error } = await supabase.auth.signUp({
       email: toEmail(username),
       password,
-      options: { emailRedirectTo: undefined },
     })
     if (error) return error.message
     if (!data.user) return 'Failed to create account'
