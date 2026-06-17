@@ -2,9 +2,8 @@ import { create } from 'zustand'
 import type { User } from '@supabase/supabase-js'
 import { supabase } from '../lib/supabase'
 
-// Username-only auth: email is derived internally and never shown to the user.
-function toEmail(username: string) {
-  return `${username.toLowerCase().trim()}@letterpanic.game`
+function usernameFromEmail(email: string) {
+  return email.split('@')[0].toLowerCase().replace(/[^a-z0-9_]/g, '_')
 }
 
 interface AuthState {
@@ -12,8 +11,8 @@ interface AuthState {
   username: string | null
   loading: boolean
   init: () => Promise<void>
-  signIn: (username: string, password: string) => Promise<string | null>
-  signUp: (username: string, password: string) => Promise<string | null>
+  signIn: (email: string, password: string) => Promise<string | null>
+  signUp: (email: string, password: string) => Promise<string | null>
   signOut: () => Promise<void>
 }
 
@@ -45,26 +44,15 @@ export const useAuthStore = create<AuthState>((set) => ({
     })
   },
 
-  async signIn(username, password) {
-    const { error } = await supabase.auth.signInWithPassword({
-      email: toEmail(username),
-      password,
-    })
+  async signIn(email, password) {
+    const { error } = await supabase.auth.signInWithPassword({ email, password })
     return error?.message ?? null
   },
 
-  async signUp(username, password) {
-    if (username.length < 3) return 'Username must be at least 3 characters'
-    if (!/^[a-zA-Z0-9_]+$/.test(username)) return 'Letters, numbers, and underscores only'
+  async signUp(email, password) {
+    const username = usernameFromEmail(email)
 
-    const { data: existing } = await supabase
-      .from('profiles').select('id').eq('username', username).maybeSingle()
-    if (existing) return 'Username already taken'
-
-    const { data, error } = await supabase.auth.signUp({
-      email: toEmail(username),
-      password,
-    })
+    const { data, error } = await supabase.auth.signUp({ email, password })
     if (error) return error.message
     if (!data.user) return 'Failed to create account'
 

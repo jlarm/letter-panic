@@ -10,7 +10,7 @@ function AuthPage() {
   const { user, signIn, signUp } = useAuthStore()
   const navigate = useNavigate()
   const [mode, setMode] = useState<'login' | 'register'>('login')
-  const [username, setUsername] = useState('')
+  const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
@@ -24,8 +24,8 @@ function AuthPage() {
     setError(null)
     setBusy(true)
     const err = mode === 'login'
-      ? await signIn(username, password)
-      : await signUp(username, password)
+      ? await signIn(email, password)
+      : await signUp(email, password)
     setBusy(false)
     if (err) setError(err)
   }
@@ -39,15 +39,14 @@ function AuthPage() {
 
         <form className="auth-form" onSubmit={handleSubmit}>
           <div className="auth-field">
-            <label className="auth-label">USERNAME</label>
+            <label className="auth-label">EMAIL ADDRESS</label>
             <input
               className="auth-input"
-              type="text"
-              value={username}
-              onChange={e => setUsername(e.target.value)}
-              autoComplete="username"
+              type="email"
+              value={email}
+              onChange={e => setEmail(e.target.value)}
+              autoComplete="email"
               spellCheck={false}
-              maxLength={20}
               required
             />
           </div>
