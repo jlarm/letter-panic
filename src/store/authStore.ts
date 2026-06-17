@@ -56,10 +56,6 @@ export const useAuthStore = create<AuthState>((set) => ({
     if (error) return error.message
     if (!data.user) return 'Failed to create account'
 
-    const { error: profileError } = await supabase
-      .from('profiles').insert({ id: data.user.id, username })
-    if (profileError) return profileError.message
-
     set({ username })
     return null
   },
